@@ -14,11 +14,15 @@ export async function middleware(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          const cookies = request.cookies.getAll()
-          console.log('Auth cookie value prefix:',
-            cookies.find(c => c.name.includes('auth-token'))?.value?.substring(0, 50) ?? 'not found'
-          )
-          return cookies
+          return request.cookies.getAll().map(cookie => {
+            if (cookie.value.startsWith('base64-')) {
+              return {
+                ...cookie,
+                value: Buffer.from(cookie.value.slice(7), 'base64').toString('utf-8')
+              }
+            }
+            return cookie
+          })
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) =>
