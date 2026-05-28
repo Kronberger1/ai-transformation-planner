@@ -18,11 +18,16 @@ export default function LoginForm() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    console.log('Attempting login for:', email)
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    console.log('Login response - error:', error?.message ?? 'none')
+    console.log('Login response - session:', data?.session ? 'exists' : 'null')
+    console.log('Login response - user:', data?.user?.email ?? 'null')
     if (error) {
       setError(error.message)
       setLoading(false)
     } else {
+      console.log('Redirecting to dashboard...')
       window.location.href = '/dashboard'
     }
   }
