@@ -36,7 +36,12 @@ export async function proxy(request: NextRequest) {
     return supabaseResponse
   }
 
-  if (!user) {
+  const PROTECTED_PREFIXES = ['/dashboard', '/admin']
+  const isProtected = PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + '/')
+  )
+
+  if (isProtected && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
