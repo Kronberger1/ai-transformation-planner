@@ -18,19 +18,27 @@ export default function LoginForm() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    console.log('Attempting login for:', email)
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    console.log('Login response - error:', error?.message ?? 'none')
-    console.log('Login response - session:', data?.session ? 'exists' : 'null')
-    console.log('Login response - user:', data?.user?.email ?? 'null')
     if (error) {
       setError(error.message)
       setLoading(false)
     } else {
-      console.log('Redirecting to dashboard...')
-      // Wait for Supabase to finish writing the session cookie
-      await new Promise(resolve => setTimeout(resolve, 500))
-      window.location.replace('/dashboard')
+      // Force a full server-side session sync
+      const response = await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_token: data.session?.access_token,
+          refresh_token: data.session?.refresh_token
+        }),
+        credentials: 'include'
+      })
+      if (response.ok) {
+        window.location.replace('/dashboard')
+      } else {
+        setError('Session error. Please try again.')
+        setLoading(false)
+      }
     }
   }
 
