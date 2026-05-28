@@ -21,12 +21,10 @@ export default function LoginForm() {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
       setError(error.message)
+      setLoading(false)
     } else {
-      router.refresh()
-      await new Promise((resolve) => setTimeout(resolve, 100))
-      router.push('/dashboard')
+      window.location.href = '/dashboard'
     }
-    setLoading(false)
   }
 
   async function handleReset(e: React.FormEvent) {
