@@ -35,6 +35,8 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  console.log('getUser result:', user?.email ?? 'no user', 'cookies:', request.cookies.getAll().filter(c => c.name.includes('sb')).map(c => c.name))
+
   console.log('User found:', user?.email ?? 'none')
   console.log('Cookies present:', request.cookies.getAll().map(c => c.name).join(', '))
 
