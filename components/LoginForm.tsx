@@ -28,7 +28,9 @@ export default function LoginForm() {
       setLoading(false)
     } else {
       console.log('Redirecting to dashboard...')
-      window.location.href = '/dashboard'
+      // Wait for Supabase to finish writing the session cookie
+      await new Promise(resolve => setTimeout(resolve, 500))
+      window.location.replace('/dashboard')
     }
   }
 
