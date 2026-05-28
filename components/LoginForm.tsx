@@ -19,12 +19,16 @@ export default function LoginForm() {
     setLoading(true)
     setError(null)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
+    console.log('Login result - error:', error)
+    console.log('Login result - session check starting')
     if (error) {
       setError(error.message)
       setLoading(false)
     } else {
       window.location.href = '/dashboard'
     }
+    const { data: sessionData } = await supabase.auth.getSession()
+    console.log('Session after login:', JSON.stringify(sessionData))
   }
 
   async function handleReset(e: React.FormEvent) {
