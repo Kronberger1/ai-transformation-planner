@@ -18,27 +18,12 @@ export default function LoginForm() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
       setError(error.message)
       setLoading(false)
     } else {
-      // Force a full server-side session sync
-      const response = await fetch('/api/auth/session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          access_token: data.session?.access_token,
-          refresh_token: data.session?.refresh_token
-        }),
-        credentials: 'include'
-      })
-      if (response.ok) {
-        window.location.replace('/dashboard')
-      } else {
-        setError('Session error. Please try again.')
-        setLoading(false)
-      }
+      window.location.href = '/dashboard'
     }
   }
 
