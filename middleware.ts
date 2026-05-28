@@ -28,13 +28,6 @@ export async function middleware(request: NextRequest) {
           )
         },
       },
-      cookieOptions: {
-        name: 'sb-session',
-        lifetime: 60 * 60 * 8,
-        domain: '',
-        path: '/',
-        sameSite: 'lax'
-      },
     }
   )
 
