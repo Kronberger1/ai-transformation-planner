@@ -22,8 +22,9 @@ export default function LoginForm() {
     if (error) {
       setError(error.message)
     } else {
-      router.push('/dashboard')
       router.refresh()
+      await new Promise((resolve) => setTimeout(resolve, 100))
+      router.push('/dashboard')
     }
     setLoading(false)
   }
